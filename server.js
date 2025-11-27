@@ -2,6 +2,14 @@ import express from "express";
 import fs from "fs";
 import path from "path";
 import { parse } from "csv-parse/sync";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// ... tu código de importación ...
+
+// Añade estas líneas para definir __dirname en ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 app.use(express.json());
