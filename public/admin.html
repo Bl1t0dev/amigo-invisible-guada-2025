@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ADMIN – Amigo Invisible</title>
+<style>
+body { font-family: Arial; padding: 20px; max-width: 600px; margin: auto; }
+textarea, input, button { width: 100%; padding: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<h2>Panel administrador</h2>
+
+<h3>1. Subir CSV</h3>
+<textarea id="csv" rows="10"></textarea>
+<button onclick="upload()">Subir CSV</button>
+<p id="out1"></p>
+
+<h3>2. Generar sorteo</h3>
+<button onclick="generar()">Generar sorteo</button>
+<p id="out2"></p>
+
+<script>
+async function upload(){
+  const csvContent = document.getElementById("csv").value;
+  const r = await fetch("/api/upload-csv",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ csvContent })
+  });
+  const j = await r.json();
+  document.getElementById("out1").innerText = JSON.stringify(j);
+}
+
+async function generar(){
+  const r = await fetch("/api/generar",{ method:"POST" });
+  const j = await r.json();
+  document.getElementById("out2").innerText = JSON.stringify(j, null, 2);
+}
+</script>
+
+</body>
+</html>

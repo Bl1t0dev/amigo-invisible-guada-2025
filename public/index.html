@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Consulta tu Amigo Invisible</title>
+<style>
+body { font-family: Arial; padding: 20px; max-width: 600px; margin: auto; }
+input, button { width: 100%; padding: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<h2>Consulta tu amigo invisible</h2>
+<input id="nombre" placeholder="Escribe tu nombre tal cual aparece en el CSV">
+<button onclick="check()">Consultar</button>
+
+<p id="res"></p>
+
+<script>
+async function check(){
+  const nombre = document.getElementById("nombre").value;
+  const r = await fetch("/api/check",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ nombre })
+  });
+  const j = await r.json();
+  document.getElementById("res").innerText =
+    j.ok ? "Te ha tocado: " + j.amigo : "Error: " + j.error;
+}
+</script>
+
+</body>
+</html>
