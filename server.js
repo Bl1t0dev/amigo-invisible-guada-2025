@@ -11,6 +11,34 @@ app.use(express.static("public"));
 let participants = [];
 let assignments = {};
 
+// --- NUEVA FUNCIÓN: CARGAR CSV AL INICIO ---
+const CSV_FILE_PATH = path.join(__dirname, 'participantes.csv'); // Ruta correcta
+
+try {
+    const csvContent = fs.readFileSync(CSV_FILE_PATH, 'utf-8');
+    
+    // Usamos el mismo bloque de parseo que en /api/upload-csv
+    const rows = parse(csvContent, {
+        columns: true,
+        skip_empty_lines: true,
+        trim: true
+    });
+
+    participants = rows.map(p => ({
+        nombre: p.Nombre.trim(),
+        telefono: p.Telefono?.trim() || "",
+        restricciones: p.Restricciones
+          ? p.Restricciones.split(";").map(r => r.trim()).filter(r => r)
+          : []
+    }));
+
+    console.log(`✅ Participantes cargados al iniciar: ${participants.length}`);
+
+} catch (err) {
+    console.error(`❌ ERROR al cargar participantes.csv: ${err.message}`);
+    // Opcional: Si Render no encuentra el archivo, seguirá usando la lista vacía.
+}
+
 // --- FUNCIÓN DE CARGA DE CSV ---
 app.post("/api/upload-csv", (req, res) => {
   const { csvContent } = req.body;
